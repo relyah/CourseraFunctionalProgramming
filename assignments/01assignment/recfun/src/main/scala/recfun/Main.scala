@@ -40,20 +40,16 @@ object Main {
    */
   def countChange(money: Int, coins: List[Int]): Int = {
     def helper(money: Int, coins: List[Int], acc: Int): Int = {
-      println("Money:" + money + " Coins: " + coins.toString() + " accCounter:" + acc)
-      if (money == 0) {
-        println("Money exact. Return= acc+1="+(acc+1))
+      if (money == 0)
         acc + 1
-      } else if (money < 0 || coins.isEmpty) {
-        if (money < 0)
-          println("Money exhausted. Return= acc="+(acc))
-        if (coins.isEmpty)
-          println("Combinations finished. Return= acc="+(acc))
+      else if (money < 0 || coins.isEmpty)
         acc
-      } else helper(money - coins.head, coins, acc) + helper(money, coins.tail, acc)
+      else helper(money - coins.head, coins, acc) + helper(money, coins.tail, acc)
     }
 
-    if (money <= 0 || coins.isEmpty) 0
-    else helper(money, coins, 0)
+    if (money <= 0 || coins.isEmpty)
+      0
+    else
+      helper(money, coins, 0)
   }
 }

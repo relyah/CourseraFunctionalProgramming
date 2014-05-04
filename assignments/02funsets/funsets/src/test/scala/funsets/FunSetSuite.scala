@@ -228,4 +228,20 @@ class FunSetSuite extends FunSuite {
 
     }
   }
+
+  test("map") {
+    new TestSets {
+      val map_s1 = map(s1, x => x + 1)
+      assert(contains(map_s1, 2), "map f(x)=x+1, contains 2")
+      assert(!contains(map_s1, 1), "map f(x)=x+1, does not contain 1")
+
+      val map_s123 = map(s123, x => x - 1)
+      assert(!contains(map_s123, -1), "map f(x)=x-1, does not contain -1")
+      assert(contains(map_s123, 0), "map f(x)=x-1, contains 0")
+      assert(contains(map_s123, 1), "map f(x)=x-1, contains 1")
+      assert(contains(map_s123, 2), "map f(x)=x-1, contains 2")
+      assert(!contains(map_s123, 3), "map f(x)=x-1, does not contain 3")
+      assert(!contains(map_s123, 4), "map f(x)=x-1, does not contain 4")
+    }
+  }
 }

@@ -100,6 +100,9 @@ class FunSetSuite extends FunSuite {
     val s1 = singletonSet(1)
     val s2 = singletonSet(2)
     val s3 = singletonSet(3)
+    def s123: Set = x => x >= 1 && x <= 3
+    def s234: Set = x => x >= 2 && x <= 4
+
   }
 
   /**
@@ -157,6 +160,31 @@ class FunSetSuite extends FunSuite {
       val s = intersect(s1, s2)
       assert(!contains(s, 1), "Intersect 1")
       assert(!contains(s, 2), "Intersect 2")
+      
+      var s23 = intersect(s123,s234)
+      assert(contains(s23,2), "Intersect s23 contains 2")
+      assert(contains(s23,3), "Intersect s23 contains 3")
+      assert(!contains(s23,1), "Intersect s23 does not contain 1")
+      assert(!contains(s23,4), "Intersect s23 does not contain 4")
+      
+    }
+  }
+  
+  test("difference contains all elements in s but not in t") {
+    new TestSets {
+      val s = diff(s1, s2)
+      assert(contains(s,1),"Diff s1 s2 contains 1")
+      assert(!contains(s,2),"Diff s1 s2 does not contain 2")
+      assert(!contains(s,3),"Diff s1 s2 does not contain 3")
+      
+      var s1diff = diff(s123,s234)
+      assert(contains(s1diff,1),"Diff s123 s234 contains 1")
+      assert(!contains(s1diff,0),"Diff s123 s234 does not contain 0")
+      assert(!contains(s1diff,2),"Diff s123 s234 does not contain 2")
+      assert(!contains(s1diff,3),"Diff s123 s234 does not contain 3")
+      assert(!contains(s1diff,4),"Diff s123 s234 does not contain 4")
+      assert(!contains(s1diff,5),"Diff s123 s234 does not contain 5")
+      
     }
   }
 }

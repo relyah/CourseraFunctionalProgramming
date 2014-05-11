@@ -66,7 +66,8 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def mostRetweeted: Tweet = ???
+  def mostRetweeted: Tweet = null
+  def mostRetweetedAcc(mr: Tweet): Tweet = mr
 
   /**
    * Returns a list containing all tweets of this set, sorted by retweet count
@@ -77,7 +78,22 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def descendingByRetweet: TweetList = ???
+  def descendingByRetweet: TweetList = {
+    val mr = mostRetweeted
+    if (mr == null)
+      Nil
+    else
+      descendingByRetweetAcc(this.remove(mr), new Cons(mr, Nil))
+  }
+
+  def descendingByRetweetAcc(ts: TweetSet, acc: TweetList): TweetList = {
+    val mr = ts.mostRetweeted
+    if (mr == null) {
+      acc
+    } else {
+      descendingByRetweetAcc(ts.remove(mr), new Cons(acc.head, new Cons(mr, acc.tail)))
+    }
+  }
 
   /**
    * The following methods are already implemented
@@ -112,7 +128,7 @@ class Empty extends TweetSet {
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
     acc
   }
-  
+
   def union(other: TweetSet): TweetSet = other
 
   /**
@@ -139,8 +155,16 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     else
       left.filterAcc(p, right.filterAcc(p, acc))
   }
-  
+
   def union(other: TweetSet): TweetSet = ((left union right) union other) incl elem
+
+  override def mostRetweeted: Tweet = mostRetweetedAcc(elem)
+
+  override def mostRetweetedAcc(mr: Tweet): Tweet =
+    if (elem.retweets > mr.retweets)
+      left.mostRetweetedAcc(right.mostRetweetedAcc(elem))
+    else
+      left.mostRetweetedAcc(right.mostRetweetedAcc(mr))
 
   /**
    * The following methods are already implemented

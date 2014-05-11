@@ -37,7 +37,6 @@ class TweetSetSuite extends FunSuite {
   test("filter: a on set5") {
     new TestSets {
       var result: TweetSet = set5.filter(tw => tw.user == "a")
-      println(result.toString())
       assert(size(result) === 1)
     }
   }
@@ -45,6 +44,37 @@ class TweetSetSuite extends FunSuite {
   test("filter: 20 on set5") {
     new TestSets {
       assert(size(set5.filter(tw => tw.retweets == 20)) === 2)
+    }
+  }
+
+  test("filter: 321 on tweet data") {
+    new TestSets {
+      assert(size(TweetReader.allTweets.filter(tw => tw.retweets == 321)) === 1)
+    }
+  }
+
+  test("filter: 205 on tweet data") {
+    new TestSets {
+      assert(size(TweetReader.allTweets.filter(tw => tw.retweets == 205)) === 1)
+    }
+  }
+
+  test("filter: 205 or 321 on tweet data") {
+    new TestSets {
+      assert(size(TweetReader.allTweets.filter(tw => tw.retweets == 205 || tw.retweets == 321)) === 2)
+    }
+  }
+
+  test("filter: trending apple and google then 205 or 321 on tweet data") {
+    new TestSets {
+
+      val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
+      val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
+
+      lazy val googleTweets: TweetSet = TweetReader.allTweets.filter(t => google.exists(s => t.text.contains(s)))
+      lazy val appleTweets: TweetSet = TweetReader.allTweets.filter(t => apple.exists(s => t.text.contains(s)))
+
+      assert(size((appleTweets union googleTweets).filter(tw => tw.retweets == 205 || tw.retweets == 321)) === 2)
     }
   }
 
@@ -72,13 +102,6 @@ class TweetSetSuite extends FunSuite {
       intercept[NoSuchMethodException] {
         var mr = set1.mostRetweeted
       }
-
-//      try {
-//        var mr = set1.mostRetweeted
-//        fail()
-//      } catch {
-//        case _: NoSuchMethodException =>
-//      }
     }
   }
 

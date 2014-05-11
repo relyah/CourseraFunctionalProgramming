@@ -56,7 +56,8 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def union(that: TweetSet): TweetSet
+  def union(that: TweetSet): TweetSet =
+    that.filterAcc(twit => true, this)
 
   /**
    * Returns the tweet from this set which has the greatest retweet count.
@@ -111,8 +112,6 @@ abstract class TweetSet {
 
 class Empty extends TweetSet {
 
-  def union(other: TweetSet): TweetSet = other
-
   override def mostRetweeted: Tweet = throw new NoSuchMethodException
 
   def descendingByRetweet: TweetList = Nil
@@ -141,17 +140,6 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     else
       left.filterAcc(p, right.filterAcc(p, acc))
   }
-
-  def union(other: TweetSet): TweetSet = {
-    val t1 = left.union(right)
-    val t2 = t1.union(other)
-    val t3 = t2.incl(elem)
-    t3
-  }
-  
-//  def unionAcc(acc: TweetSet, other: TweetSet): TweetSet= {
-//    
-//  }
 
   override def mostRetweeted: Tweet = mostRetweetedAcc(elem)
 
@@ -229,29 +217,23 @@ object GoogleVsApple {
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
-  println("Eric Schmidt confirms a Google Maps app on iOS 6 is still some way off: http://t.co/bobRuY06".contains("iOS"))
-  println(apple.exists(p => "Eric Schmidt confirms a Google Maps app on iOS 6 is still some way off: http://t.co/bobRuY06".contains(p)))
+  //def filterTweets(theList: List[String]): TweetSet = TweetReader.allTweets.filter(tw => theList.exists(p => tw.text.contains(p)))
 
-  println(TweetReader.allTweets)
+  //lazy val googleTweets: TweetSet = filterTweets(google)
+  //lazy val appleTweets: TweetSet = filterTweets(apple)
 
-  /*def filterTweets(theList: List[String]): TweetSet = TweetReader.allTweets.filter(tw=>theList.exists(p=>tw.text.contains(p)))
-  
-  lazy val googleTweets: TweetSet = filterTweets(google)
-  lazy val appleTweets: TweetSet = filterTweets(apple)
-  
-  println(googleTweets)
-  println(appleTweets)
+  lazy val googleTweets: TweetSet = TweetReader.allTweets.filter(t => google.exists(s => t.text.contains(s)))
+  lazy val appleTweets: TweetSet = TweetReader.allTweets.filter(t => apple.exists(s => t.text.contains(s)))
 
-  /**
-   * A list of all tweets mentioning a keyword from either apple or google,
-   * sorted by the number of retweets.
-   */
-  lazy val trending: TweetList = null// (appleTweets union googleTweets) descendingByRetweet
-  *
-  */
+  //  /**
+  //   * A list of all tweets mentioning a keyword from either apple or google,
+  //   * sorted by the number of retweets.
+  //   */
+  lazy val trending: TweetList = (appleTweets union googleTweets) descendingByRetweet
+
 }
 
 object Main extends App {
   // Print the trending tweets
-  GoogleVsApple //.trending foreach println
+  GoogleVsApple.trending foreach println
 }

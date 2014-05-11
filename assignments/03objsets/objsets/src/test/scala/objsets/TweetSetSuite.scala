@@ -68,8 +68,17 @@ class TweetSetSuite extends FunSuite {
 
   test("mostRetweeted: empty set") {
     new TestSets {
-      val mr = set1.mostRetweeted
-      assert(mr == null)
+
+      intercept[NoSuchMethodException] {
+        var mr = set1.mostRetweeted
+      }
+
+//      try {
+//        var mr = set1.mostRetweeted
+//        fail()
+//      } catch {
+//        case _: NoSuchMethodException =>
+//      }
     }
   }
 

@@ -1,6 +1,9 @@
 INDEX VERSION 1.126+/home/bert/code/scala/coursera/functionalprogramming/workspace/.metadata/.plugins/org.eclipse.jdt.core
+3613508846.index
 2687044429.index
+1753852257.index
 2583270963.index
+64927070.index
 3126397693.index
 2575527706.index
 723536433.index
@@ -8,13 +11,17 @@ INDEX VERSION 1.126+/home/bert/code/scala/coursera/functionalprogramming/workspa
 2865339266.index
 472917477.index
 1070177179.index
+3124040430.index
 2758502683.index
 3286443815.index
 3630836329.index
 2418834148.index
+1904018613.index
 1525719707.index
 1944844768.index
+220211408.index
 960175182.index
+4101779091.index
 2667943600.index
 316298347.index
 676533104.index

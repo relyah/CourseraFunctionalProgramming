@@ -99,7 +99,7 @@ class TweetSetSuite extends FunSuite {
   test("mostRetweeted: empty set") {
     new TestSets {
 
-      intercept[NoSuchMethodException] {
+      intercept[NoSuchElementException] {
         var mr = set1.mostRetweeted
       }
     }
@@ -140,5 +140,10 @@ class TweetSetSuite extends FunSuite {
       assert(!trends.isEmpty)
       assert(trends.head.user == "b")
     }
+  }
+
+  test("google vs apple: count tweets") {
+    assert(size(GoogleVsApple.googleTweets) === 35)
+    assert(size(GoogleVsApple.appleTweets) === 140)
   }
 }

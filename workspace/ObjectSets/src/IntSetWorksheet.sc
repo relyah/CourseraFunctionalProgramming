@@ -2,6 +2,9 @@
 import generics._
 
 object IntSetWorksheet {
+  var mynil = new Nil[Int]()                      //> mynil  : generics.Nil[Int] = generics.Nil@50480174
+  mynil.isEmpty                                   //> res0: Boolean = true
+  mynil.isNotEmpty                                //> res1: Boolean = false
   var t1 = new NonEmptySet(3, EmptySet, EmptySet) //> t1  : NonEmptySet = {. 3 .}
   var t2 = t1 incl 4                              //> t2  : IntSet = {. 3 {. 4 .}}
 
@@ -13,13 +16,13 @@ object IntSetWorksheet {
     else nth(n - 1, xs.tail)                      //> nth: [T](n: Int, xs: generics.List[T])T
 
   var l = new Cons(1, new Cons(2, new Cons(3, new Nil)))
-                                                  //> l  : generics.Cons[Int] = generics.Cons@7f387985
+                                                  //> l  : generics.Cons[Int] = generics.Cons@4900269d
 
-  nth(0, l)                                       //> res0: Int = 1
-  nth(2,l)                                        //> res1: Int = 3
-  nth(-1,l)                                       //> java.lang.IndexOutOfBoundsException
-                                                  //| 	at IntSetWorksheet$$anonfun$main$1.nth$1(IntSetWorksheet.scala:11)
-                                                  //| 	at IntSetWorksheet$$anonfun$main$1.apply$mcV$sp(IntSetWorksheet.scala:19
+  nth(0, l)                                       //> res2: Int = 1
+  nth(2, l)                                       //> res3: Int = 3
+  nth(-1, l)                                      //> java.lang.IndexOutOfBoundsException
+                                                  //| 	at IntSetWorksheet$$anonfun$main$1.nth$1(IntSetWorksheet.scala:14)
+                                                  //| 	at IntSetWorksheet$$anonfun$main$1.apply$mcV$sp(IntSetWorksheet.scala:22
                                                   //| )
                                                   //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$$anonfun$$exe
                                                   //| cute$1.apply$mcV$sp(WorksheetSupport.scala:76)

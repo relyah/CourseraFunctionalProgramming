@@ -96,43 +96,13 @@ object Anagrams {
    *  in the example above could have been displayed in some other order.
    */
   def combinations(occurrences: Occurrences): List[Occurrences] = {
-    def loop0(elt: (Char, Int)): Occurrences = elt match {
-      case (char, count) =>
+    occurrences.foldRight(List[Occurrences](List())) {
+      case ((char, count), rest) =>
         (for {
-          index <- 1 to count
-        } yield char -> index).toList
+          combs <- rest;
+          len <- 1 to count
+        } yield (char, len) :: combs) ++ rest
     }
-
-    def loop1(elt: List[Occurrences], rest: List[Occurrences], deep: Int): List[Occurrences] = {
-      (elt, rest) match {
-        case (head :: tail, _) if (head.length == deep) => elt
-        case (acc, tail) => {
-          val res = for {
-            t <- tail
-            x <- t
-            y <- elt
-            if (!y.contains(x))
-          } yield {
-            (y :+ x)
-          }
-          if (tail.length > 1) loop1(res, tail.tail, deep) else loop1(res, tail, deep)
-        }
-      }
-    }
-
-    def loop2(remain: Occurrences, occ: Occurrences, acc: List[Occurrences]): List[Occurrences] = occ match {
-      case Nil => acc
-      case (head :: tail) => {
-        val res = (for {
-          deep <- 1 to occurrences.length
-          cb <- loop0(head)
-        } yield loop1(List(List(cb)), tail.map(loop0), deep)).reduceLeft(_ ++ _).toList
-        if (!remain.contains(head)) {
-          loop2(head :: remain, tail :+ head, acc ++ res)
-        } else acc
-      }
-    }
-    loop2(Nil, occurrences, Nil).map(_.sortBy(identity)).distinct ++ List(Nil)
   }
 
   /**
@@ -195,6 +165,27 @@ object Anagrams {
    *
    *  Note: There is only one anagram of an empty sentence.
    */
-  def sentenceAnagrams(sentence: Sentence): List[Sentence] = ???
+  def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
+    def sentenceAnagrams0(all: Occurrences, occurrences: Occurrences, sentence: Sentence): List[Sentence] = {
+      if (occurrences.toMap.get('a').isDefined && occurrences.toMap.get('r').isDefined && occurrences.toMap.get('t').isDefined) println(all, occurrences, sentence)
+      combinations(occurrences).flatMap { occ =>
+        if (occ.toMap.get('a').isDefined && occ.toMap.get('r').isDefined && occ.toMap.get('t').isDefined) println(all, occurrences, occ, sentence)
+        val words = dictionaryByOccurrences.get(occ) getOrElse Nil
+        (words, occ, all) match {
+          case (_, _, Nil) => {
+            List(sentence)
+          }
+          case (words, occ, _) => {
+            (for {
+              word <- words
+              s <- sentenceAnagrams0(subtract(all, occ), subtract(all, occ), sentence :+ word)
+            } yield s)
+          }
+        }
+      }
+    }
+    val all = sentenceOccurrences(sentence)
+    sentenceAnagrams0(all, all, Nil)
+  }
 
 }

@@ -111,4 +111,18 @@ class AnagramsSuite extends FunSuite {
     assert(sentenceAnagrams(sentence).toSet === anas.toSet)
   }
 
+  test("sentence anagrams: i love you") {
+    val sentence = List("i", "love", "you")
+    val anas = List(
+      List("Lev", "you", "Io"),
+      List("Io", "you", "Lev"),
+      List("Io", "Lev", "you"),
+      List("you", "Io", "Lev"),
+      List("you", "olive"),
+      List("you", "Lev", "Io"),
+      List("Lev", "Io", "you"),
+      List("olive", "you"))
+    assert(sentenceAnagrams(sentence).toSet === anas.toSet)
+  }
+
 }

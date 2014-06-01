@@ -3,6 +3,39 @@ object ListWorkSheet {
   //def mapFun(xs: List[Int], f: Int => Int): List[Int] =
   //  (xs.foldRight(Nil: List[Int]())) { (xs, x) => xs :: (f(x))}
 
+  def pack(init: List[String]): List[List[String]] = {
+    def packAcc(acc: List[List[String]], remaining: List[String]): List[List[String]] = {
+      remaining match {
+        case Nil => acc
+        case x :: xs => {
+
+          val (left, right) = remaining.span(y => y.compareTo(x) == 0)
+          packAcc(acc ::: List(left), right)
+        }
+      }
+    }
+    packAcc(List(), init)
+  }                                               //> pack: (init: List[String])List[List[String]]
+
+  def encode(init: List[String]): List[(String, Int)] = {
+    val packed = pack(init)
+    packed.map(x => (x.head, x.length))
+  }                                               //> encode: (init: List[String])List[(String, Int)]
+
+  def removeAt(n: Int, xs: List[Int]): List[Int] =
+    {
+      def removeAtAcc(now: Int, remaining: List[Int]): List[Int] =
+        {
+          remaining match {
+            case List() => List()
+            case y :: ys =>
+              if (now == n) ys
+              else y :: removeAtAcc(now + 1, ys)
+          }
+        }
+      removeAtAcc(0, xs)
+    }                                             //> removeAt: (n: Int, xs: List[Int])List[Int]
+
   def sum(xs: List[Int]): Int = xs match {
     case Nil => 0
     case y :: ys => y + sum(ys)
@@ -77,15 +110,34 @@ object ListWorkSheet {
   (nums foldRight 0) { (x, y) => x + y }          //> res11: Int = 89
   (0 /: nums) { (x, y) => x + y }                 //> res12: Int = 89
   (nums :\ 0) { (x, y) => x + y }                 //> res13: Int = 89
-  var x = 1::2::3::Nil                            //> x  : List[Int] = List(1, 2, 3)
+  var x = 1 :: 2 :: 3 :: Nil                      //> x  : List[Int] = List(1, 2, 3)
   x.head                                          //> res14: Int = 1
 
-var nums2 = 1::2::3::44::Nil                      //> nums2  : List[Int] = List(1, 2, 3, 44)
-  
- nums :: nums2                                    //> res15: List[Any] = List(List(5, 12, 1, 4, 67), 1, 2, 3, 44)
- nums.::(nums2)                                   //> res16: List[Any] = List(List(1, 2, 3, 44), 5, 12, 1, 4, 67)
- nums ::: nums2                                   //> res17: List[Int] = List(5, 12, 1, 4, 67, 1, 2, 3, 44)
- nums.reduceRight((x,y)=>x+y)                     //> res18: Int = 89
- nums.foldLeft(0)((x,y)=>x+y)                     //> res19: Int = 89
- nums.foldLeft(1)((x,y)=>x*y)                     //> res20: Int = 16080
+  var nums2 = 1 :: 2 :: 3 :: 44 :: Nil            //> nums2  : List[Int] = List(1, 2, 3, 44)
+
+  nums :: nums2                                   //> res15: List[Any] = List(List(5, 12, 1, 4, 67), 1, 2, 3, 44)
+  nums.::(nums2)                                  //> res16: List[Any] = List(List(1, 2, 3, 44), 5, 12, 1, 4, 67)
+  nums ::: nums2                                  //> res17: List[Int] = List(5, 12, 1, 4, 67, 1, 2, 3, 44)
+  nums.reduceRight((x, y) => x + y)               //> res18: Int = 89
+  nums.foldLeft(0)((x, y) => x + y)               //> res19: Int = 89
+  nums.foldLeft(1)((x, y) => x * y)               //> res20: Int = 16080
+
+  val newList = 4 :: nums2                        //> newList  : List[Int] = List(4, 1, 2, 3, 44)
+  val newList2 = nums2 ::: List(4)                //> newList2  : List[Int] = List(1, 2, 3, 44, 4)
+  var newList3 = nums2 ++ List(4)                 //> newList3  : List[Int] = List(1, 2, 3, 44, 4)
+
+  removeAt(1, nums2)                              //> res21: List[Int] = List(1, 3, 44)
+  var pair = ("hello", 42)                        //> pair  : (String, Int) = (hello,42)
+  var (label, value) = pair                       //> label  : String = hello
+                                                  //| value  : Int = 42
+  println(label)                                  //> hello
+
+  var l1 = List(1, 2)                             //> l1  : List[Int] = List(1, 2)
+  var l2 = List(3, 4)                             //> l2  : List[Int] = List(3, 4)
+  var l3 = l1 :: List(l2)                         //> l3  : List[List[Int]] = List(List(1, 2), List(3, 4))
+  l3 ::: List(l2)                                 //> res22: List[List[Int]] = List(List(1, 2), List(3, 4), List(3, 4))
+
+  pack(List("a", "a", "a", "b", "c", "c", "a"))   //> res23: List[List[String]] = List(List(a, a, a), List(b), List(c, c), List(a
+                                                  //| ))
+  encode(List("a", "a", "a", "b", "c", "c", "a")) //> res24: List[(String, Int)] = List((a,3), (b,1), (c,2), (a,1))
 }
